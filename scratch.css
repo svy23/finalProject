@@ -1,0 +1,84 @@
+/* ===== CUSTOM SCRATCH PAGE STYLES ===== */
+
+body {
+    background: #0a1a2a;
+    color: white;
+    font-family: "Inter", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #102b44;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 42px;
+    color: #4db8ff;
+}
+
+.nav-links a {
+    color: #4db8ff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: #88d6ff;
+}
+
+.section {
+    padding: 40px;
+    margin: 30px auto;
+    width: 85%;
+    background: rgba(255,255,255,0.08);
+    border-radius: 15px;
+}
+
+/* Image styling */
+.feature-img {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.6);
+}
+
+/* Anchor link styling */
+.anchor-link {
+    color: #4db8ff;
+    font-weight: bold;
+}
+
+.anchor-link:hover {
+    color: #88d6ff;
+}
+
+/* List styling */
+ol {
+    padding-left: 25px;
+}
+ul {
+    padding-left: 30px;
+}
+
+/* Div blocks required by rubric */
+.info-box {
+    background: rgba(0, 150, 255, 0.15);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border: 1px solid #4db8ff;
+}
+
+.video-box, .tableau-box {
+    background: rgba(255,255,255,0.12);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}

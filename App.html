@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Breaker | Construction Edition</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        canvas {
+            background-color: #ddd;
+            display: block;
+            margin: 30px auto;
+            border: 4px solid #444;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #003366;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3" style="font-size: 1.25rem;">
+  <div class="container">
+
+    <a class="navbar-brand d-flex align-items-center fw-bold" href="Index.html" style="font-size: 1.5rem;">
+      <img src="images/logo.png" alt="Logo" style="height: 55px; width: auto; margin-right: 12px;">
+      Seth Young
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item px-2">
+          <a class="nav-link" href="Index.html">Home</a>
+        </li>
+
+        <li class="nav-item px-2">
+          <a class="nav-link active" href="Resume.html">Resume</a>
+        </li>
+
+        <li class="nav-item px-2">
+          <a class="nav-link" href="AboutMe.html">About Me</a>
+        </li>
+
+        <li class="nav-item px-2">
+          <a class="nav-link" href="scratch.html">Scratch Page</a>
+        </li>
+
+        <li class="nav-item px-2">
+          <a class="nav-link" href="App.html">Web App</a>
+        </li>
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+
+<!-- GAME TITLE -->
+<div class="container text-center mt-4">
+    <h1 class="fw-bold">Brick Breaker: Construction Edition</h1>
+    <p class="text-muted">Break all the construction bricks to win!</p>
+</div>
+
+<!-- GAME CANVAS -->
+<canvas id="gameCanvas" width="480" height="320"></canvas>
+
+<script>
+// ============================
+// Construction Brick Breaker
+// ============================
+
+// Canvas setup
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+// Ball variables
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+let ballRadius = 8;
+
+// Paddle variables
+let paddleHeight = 12;
+let paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+
+// Paddle controls
+let rightPressed = false;
+let leftPressed = false;
+
+// Brick settings
+const brickRowCount = 4;
+const brickColumnCount = 7;
+const brickWidth = 55;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 35;
+const brickOffsetLeft = 30;
+
+// Score
+let score = 0;
+
+// Store bricks in an array grid
+let bricks = [];
+for (let c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
+    }
+}
+
+// EVENT LISTENERS
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function keyDownHandler(e) {
+    if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+    if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+}
+function keyUpHandler(e) {
+    if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+    if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+}
+
+// BRICK DRAWING
+function drawBricks() {
+    for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+
+            if (bricks[c][r].status === 1) {
+                let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+                let brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+
+                // Brick color (Construction brick look)
+                ctx.fillStyle = "#b33c00"; // brick red/orange
+                ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+                ctx.strokeStyle = "#662200"; // darker mortar lines
+                ctx.strokeRect(brickX, brickY, brickWidth, brickHeight);
+            }
+        }
+    }
+}
+
+// BALL
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "#333"; // dark construction look
+    ctx.fill();
+    ctx.closePath();
+}
+
+// PADDLE
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height - paddleHeight - 5, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#444"; // steel beam color
+    ctx.fill();
+    ctx.closePath();
+}
+
+// SCORE
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#003366";
+    ctx.fillText("Score: " + score, 8, 20);
+}
+
+// COLLISION DETECTION
+function collisionDetection() {
+    for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+
+            let b = bricks[c][r];
+
+            if (b.status === 1) {
+                if (
+                    x > b.x &&
+                    x < b.x + brickWidth &&
+                    y > b.y &&
+                    y < b.y + brickHeight
+                ) {
+                    dy = -dy;
+                    b.status = 0;
+                    score++;
+
+                    if (score === brickRowCount * brickColumnCount) {
+                        alert("YOU WIN! The brick wall is demolished!");
+                        document.location.reload();
+                    }
+                }
+            }
+        }
+    }
+}
+
+// DRAW EVERYTHING
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawBricks();
+    drawBall();
+    drawPaddle();
+    drawScore();
+    collisionDetection();
+
+    // Ball movement rules
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+    if (y + dy < ballRadius) dy = -dy;
+    else if (y + dy > canvas.height - ballRadius) {
+        if (x > paddleX && x < paddleX + paddleWidth) dy = -dy;
+        else {
+            alert("GAME OVER! The wall stayed standing...");
+            document.location.reload();
+        }
+    }
+
+    x += dx;
+    y += dy;
+
+    // Paddle movement
+    if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 5;
+    if (leftPressed && paddleX > 0) paddleX -= 5;
+
+    requestAnimationFrame(draw);
+}
+
+// START GAME
+draw();
+</script>
+
+</body>
+</html>
